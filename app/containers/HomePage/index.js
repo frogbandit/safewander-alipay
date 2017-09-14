@@ -9,11 +9,17 @@
  * the linting exception.
  */
 
-import React from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { func} from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
+import request from '../../actions/request';
 
-export default class HomePage extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
+class HomePage extends Component { // eslint-disable-line react/prefer-stateless-function
+  componentDidMount() {
+    this.props.loadData();
+  }
   render() {
     return (
       <h1>
@@ -22,3 +28,25 @@ export default class HomePage extends React.PureComponent { // eslint-disable-li
     );
   }
 }
+
+HomePage.propTypes = {
+  loadData: func.isRequired,
+}
+
+const mapState = state => {};
+
+const mapDispatch = dispatch => ({
+  dispatch,
+});
+
+const mergeProps = ({ ...stateProps}, { dispatch, ...dispatchProps }) => ({
+  ...stateProps,
+  ...dispatchProps,
+  loadData() {
+    dispatch(
+			request.loadData(),
+		);
+  }
+})
+
+export default connect(mapState, mapDispatch, mergeProps)(HomePage);
